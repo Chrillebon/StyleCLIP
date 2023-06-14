@@ -97,8 +97,19 @@ normal_generator = torch.distributions.normal.Normal(
     torch.tensor([1.]),
 )
 
-# init_latents = normal_generator.sample(latent_shape).squeeze(-1).to(device)
+uniform_generator = torch.distributions.uniform.Uniform(
+    torch.tensor([-0.5]),
+    torch.tensor([0.5])
+)
+
+#latents_init = torch.randint(0,2,latent_shape, dtype=torch.float32).squeeze(-1).to(device)
+
+#latents_init = normal_generator.sample(latent_shape).squeeze(-1).to(device)
+#latents_init = uniform_generator.sample(latent_shape).squeeze(-1).to(device)
+
 latents_init = torch.zeros(latent_shape).squeeze(-1).to(device)
+#latents_init = torch.ones(latent_shape).squeeze(-1).to(device)
+
 latents = torch.nn.Parameter(latents_init, requires_grad=True)
 
 optimizer = torch.optim.Adam(
@@ -125,7 +136,7 @@ clip_transform = torchvision.transforms.Compose([
     clip_preprocess.transforms[4],
 ])
 
-if ref_img_path is None:
+if ref_img_path == "None":
     ref_img = None
 else:
     ref_img = clip_preprocess(Image.open(ref_img_path)).unsqueeze(0).to(device)
