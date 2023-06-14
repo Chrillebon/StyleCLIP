@@ -157,7 +157,7 @@ def compute_perceptual_loss(gen_img, ref_img):
     return loss/len_vgg_layer_mappings
 
 counter = 0
-while True:
+for _ in range(10):
     dlatents = latents.repeat(1,18,1)
     img = g_synthesis(dlatents)
     
