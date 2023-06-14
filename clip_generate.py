@@ -49,6 +49,12 @@ parser.add_argument(
     default=5,
     help='',
 )
+parser.add_argument(
+    '--num_steps',
+    type=int,
+    default=1000,
+    help='',
+)
 
 args = parser.parse_args()
 
@@ -58,6 +64,7 @@ prompt = args.prompt
 lr = args.lr
 img_save_freq = args.img_save_freq
 ref_img_path = args.ref_img_path
+num_steps = args.num_steps
 
 output_dir = os.path.join(output_path, f'{prompt}')
 
@@ -157,7 +164,7 @@ def compute_perceptual_loss(gen_img, ref_img):
     return loss/len_vgg_layer_mappings
 
 counter = 0
-for _ in range(100):
+for _ in range(num_steps):
     dlatents = latents.repeat(1,18,1)
     img = g_synthesis(dlatents)
     
