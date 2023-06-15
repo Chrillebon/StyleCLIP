@@ -10,7 +10,7 @@ from PIL import Image
 from stylegan_models import g_all, g_synthesis, g_mapping
 from utils import GetFeatureMaps, transform_img, compute_loss
 
-torch.manual_seed(20)
+#torch.manual_seed(20)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -94,20 +94,19 @@ latent_shape = (batch_size, 1, 512)
 
 normal_generator = torch.distributions.normal.Normal(
     torch.tensor([0.0]),
-    torch.tensor([1.]),
+    torch.tensor([.1]),
 )
 
 uniform_generator = torch.distributions.uniform.Uniform(
-    torch.tensor([-0.5]),
-    torch.tensor([0.5])
+    torch.tensor([-0.3]),
+    torch.tensor([0.3])
 )
 
-#latents_init = torch.randint(0,2,latent_shape, dtype=torch.float32).squeeze(-1).to(device)
 
 #latents_init = normal_generator.sample(latent_shape).squeeze(-1).to(device)
-#latents_init = uniform_generator.sample(latent_shape).squeeze(-1).to(device)
+latents_init = uniform_generator.sample(latent_shape).squeeze(-1).to(device)
 
-latents_init = torch.zeros(latent_shape).squeeze(-1).to(device)
+#latents_init = torch.zeros(latent_shape).squeeze(-1).to(device)
 #latents_init = torch.ones(latent_shape).squeeze(-1).to(device)
 
 latents = torch.nn.Parameter(latents_init, requires_grad=True)
@@ -177,6 +176,7 @@ def compute_perceptual_loss(gen_img, ref_img):
 counter = 0
 for _ in range(num_steps):
     dlatents = latents.repeat(1,18,1)
+    #print(dlatents.min(), dlatents.max())
     img = g_synthesis(dlatents)
     
     # NOTE: clip normalization did not seem to have much effect
